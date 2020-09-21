@@ -1,5 +1,6 @@
 package br.com.acme.sample.security.cript;
 
+import br.com.acme.sample.security.cript.servlet.filter.EncriptionIncomeFilter;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

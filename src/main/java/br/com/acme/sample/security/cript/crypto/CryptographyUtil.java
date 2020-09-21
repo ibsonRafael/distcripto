@@ -1,5 +1,8 @@
 package br.com.acme.sample.security.cript.crypto;
 
+
+
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +10,7 @@ import javax.crypto.Cipher;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -105,7 +109,7 @@ public class CryptographyUtil  {
         return generateKeyPair;
     }
 
-    public static void scheduleRotateKey(int i) {
+    public static void scheduleRotateKey(int time) {
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
@@ -117,6 +121,15 @@ public class CryptographyUtil  {
                     e.printStackTrace();
                 }
             }
-        },0,15000);
+        },0,time);
     }
+
+    public static String getHumanReadblePublicKey() {
+        String key = new String(Base64.getEncoder().encode(getKeyVault().get("publicKey")));
+        return WordUtils.wrap(key, 64, "\n", true);
+    }
+
+
+
+
 }

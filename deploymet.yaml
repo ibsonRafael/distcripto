@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: conta
+  name: conta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conta
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: conta
+    spec:
+      containers:
+        - image: acme/e-service:latest
+          imagePullPolicy: Never
+          name: conta
+          args:
+            - "-Ddns.dns_query=conta.default.svc.cluster.local"
+            - "-Ddns.dns_query=10.96.0.10"
+          env:
+            - name: "JGROUPS_LOGLEVEL"
+              value: "INFO"
+          resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conta
+  labels:
+    run: conta
+spec:
+  publishNotReadyAddresses: true
+  clusterIP: None
+  ports:
+    - name: ping
+      port: 7800
+      protocol: TCP
+      targetPort: 7800
+  selector:
+    app: conta
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: conta
+  name: nps-conta
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: conta
+  type: NodePort
+status:
+  loadBalancer: {}

@@ -3,4 +3,8 @@ server:
 
 logging:
   level:
-    org.jgroups: WARN
+    org.jgroups: ${JGROUPS_LOGLEVEL:WARN}
+
+upstream:
+  hostname: ${UPSTREAM_URL:localhost}
+  port: ${UPSTREAM_PORT:8080}

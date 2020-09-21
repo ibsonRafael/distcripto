@@ -20,12 +20,11 @@ public class CryptographyReceiver extends ReceiverAdapter {
     }
 
     private boolean isReceiverAndSenderTheSame(Message msg) {
-        return msg.getSrc().equals(msg.getSrc())
+        return msg.getSrc().equals(msg.getSrc());
     }
 
     @Override
     public void receive(Message msg) {
-
         if(isReceiverAndSenderTheSame(msg))
             return;
 

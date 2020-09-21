@@ -1,5 +1,6 @@
 package br.com.acme.sample.security.cript.crypto;
 
+import br.com.acme.sample.security.cript.cluster.ClusterMessageFactory;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.slf4j.Logger;
@@ -20,13 +21,9 @@ public class KeyChangeObserver extends Observer {
 
     @Override
     public void update() {
-        logger.info("Key changed!");
-        logger.info("Enviando chaves publicas e privadas");
-        Message m = new Message();
-        m.setObject(CryptographyUtil.getKeyVault());
-        m.setDest(null);
+        logger.info("KeyChangeObserver notificado atualização de chaves!");
         try {
-            channel.send(m);
+            channel.send(ClusterMessageFactory.getSendKeysToAll());
         } catch (Exception e) {
             e.printStackTrace();
         }

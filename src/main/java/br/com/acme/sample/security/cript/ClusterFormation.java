@@ -3,11 +3,15 @@ package br.com.acme.sample.security.cript;
 import br.com.acme.sample.security.cript.cluster.CryptographyReceiver;
 import br.com.acme.sample.security.cript.cluster.ClusterMessageFactory;
 import br.com.acme.sample.security.cript.crypto.CryptographyUtil;
+import br.com.acme.sample.security.cript.crypto.EncriptedPingGeneratorObserver;
 import br.com.acme.sample.security.cript.crypto.KeyChangeObserver;
 import org.jgroups.Address;
 import org.jgroups.JChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Base64;
 
 public class ClusterFormation {
 
@@ -25,7 +29,11 @@ public class ClusterFormation {
     }
 
     private void start() throws Exception {
-        channel = new JChannel("tcp.xml");
+        String fileName = "xablau.xml";
+        ClassLoader classLoader = getClass().getClassLoader();
+//        File file = new File(classLoader.getResource(fileName).getFile());
+
+        channel = new JChannel(classLoader.getResourceAsStream(fileName));
         channel.connect("fullcript");
         channel.setReceiver(new CryptographyReceiver(channel));
 
@@ -35,7 +43,8 @@ public class ClusterFormation {
             logger.info("Dado que é meu torno-me o mestre, curvem-se perante seu líder");
             CryptographyUtil.generateKeys();
             new KeyChangeObserver(CryptographyUtil.cryptographyStateSubjet, channel);
-            CryptographyUtil.scheduleRotateKey(60000);
+            new EncriptedPingGeneratorObserver(CryptographyUtil.cryptographyStateSubjet);
+            CryptographyUtil.scheduleRotateKey(120000);
         } else {
             logger.info("Não sou mestre! Preciso das chaves");
             logger.info("Pedindo chaves publicas e privadas");
@@ -43,31 +52,6 @@ public class ClusterFormation {
         }
     }
 
-
-    private static void gerarPing() {
-//        String payload ="PING";
-//        logger.info(payload);
-//        byte[] cpayload = new byte[0];
-//        try {
-//            cpayload = Base64.getEncoder().encode(
-//                    EncriptionIncomeFilter.encrypt(keyVault.get("publicKey"), payload.getBytes())
-//            );
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        String b64cpayload = new String(cpayload);
-//
-//        logger.info( b64cpayload );
-//        cpayload = Base64.getDecoder().decode(b64cpayload.getBytes());
-//
-//        byte[] dpayload = new byte[0];
-//        try {
-//            dpayload = EncriptionIncomeFilter.decrypt(keyVault.get("privateKey"), cpayload);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        logger.info( new String(dpayload) );
-    }
 
 
 
